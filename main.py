@@ -72,9 +72,6 @@ while True:
     elif userInput == 'CREATE':
         print("For create a new account, provide your name. \n")
 
-        genCode = str(len(accounts) + 1)
-        AccCode = f'ACC00{genCode}'
-
         while True:
             AccName = input("Enter your name: ")
             if any(char.isdigit() for char in AccName):
@@ -123,7 +120,7 @@ while True:
 
         print("Your account is created successfully.")
         print(f" This is your account name - {AccName} and your account code - {AccCode}\n")
-        print('*******Thank you*******\n\n\n')
+        print('*******Thank you*******\n\n')
 
     elif userInput == 'DEPOSIT':
         print("********DEPOSIT******** \n")
