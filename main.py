@@ -7,48 +7,47 @@ def account(isDeposit):
     accCode = input("Please enter your account code: ").upper()
     with open("data.json", mode="r") as file:
         accounts = json.load(file)
-    for i in range(0, len(accounts)):
-        selectedAcc = accounts[i]
-        if accCode in selectedAcc['code']:
-            previousBal = selectedAcc['balance']
-            
-            if isDeposit == True:
-                while True:
-                    try:
-                        accDeposit = float(input('Please enter your amount to deposit: '))
-                        accounts[i]['balance'] += accDeposit
-                        with open("data.json", "w") as jsonFile:
-                            json.dump(accounts, jsonFile)
-                        print(f"Successfully deposit of {accDeposit}RS into your account - {accCode}.\n")
-                        break
-                    except ValueError:
-                        print("Please enter number only")
-            
-            elif isDeposit == False:
-                while True:
-                    try:
-                        accWithdraw = int(input('Please enter your amount to withdraw: '))
-                        
-                        if previousBal != 0 and accWithdraw <= previousBal: 
-                            accounts[i]['balance'] -= accWithdraw
+    if any( True for i in range(0, len(accounts)) if accCode in accounts[i]['code']):
+        for i in range(0, len(accounts)):
+            selectedAcc = accounts[i]
+            if accCode in selectedAcc['code']:
+                previousBal = selectedAcc['balance']
+                
+                if isDeposit == True:
+                    while True:
+                        try:
+                            accDeposit = float(input('Please enter your amount to deposit: '))
+                            accounts[i]['balance'] += accDeposit
                             with open("data.json", "w") as jsonFile:
                                 json.dump(accounts, jsonFile)
-                            print(f"Successfully withdraw of {accWithdraw}RS into your account - {accCode}.\n")
+                            print(f"Successfully deposit of {accDeposit}RS into your account - {accCode}.\n")
+                            break
+                        except ValueError:
+                            print("Please enter number only")
+                
+                elif isDeposit == False:
+                    while True:
+                        try:
+                            accWithdraw = int(input('Please enter your amount to withdraw: '))
                             
-                        else:
-                            print(f"insufficient balance - {previousBal}RS \n\n")
-                            return None
-                    except ValueError:
-                        print("Please enter number only")
-                    
-                    break
-            else:    
-                return selectedAcc
-            break
-        else:
-            print(f"{accCode} account not found or", end=" ")
-            print("Create a new account, Type 'CREATE' \n\n")
-            return None
+                            if previousBal != 0 and accWithdraw <= previousBal: 
+                                accounts[i]['balance'] -= accWithdraw
+                                with open("data.json", "w") as jsonFile:
+                                    json.dump(accounts, jsonFile)
+                                print(f"Successfully withdraw of {accWithdraw}RS into your account - {accCode}.\n")
+                                break
+                            else:
+                                print(f"insufficient balance - {previousBal}RS \n\n")
+                                return None
+                        except ValueError:
+                            print("Please enter number only")
+                else:    
+                    return selectedAcc
+                break
+    else:
+        print(f"{accCode} account not found or", end=" ")
+        print("Create a new account, Type 'CREATE' \n\n")
+        return None
 
 print('==========================')
 print('=   Bank of Programmer   =')
@@ -94,19 +93,8 @@ while True:
                 data = json.load(file)
                 genCode = str(len(data)+1)
                 AccCode = f'ACC00{genCode}'
-
-            
-                detail = {
-                    'code': AccCode,
-                    'name': AccName,
-                    'balance': 0.0
-                }
-                data.append(detail)
-                with open("data.json", mode="w") as file:
-                    json.dump(data, file, indent=2)
-                print(data)
-
-        else:
+        
+        finally:
             detail = {
                     'code': AccCode,
                     'name': AccName,
@@ -115,7 +103,6 @@ while True:
             data.append(detail)
             with open("data.json", mode="w") as file:
                 json.dump(data, file, indent=2)
-            print(data)
   
 
         print("Your account is created successfully.")
